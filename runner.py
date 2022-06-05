@@ -169,17 +169,7 @@ while True:
     buttonRect.center = autoplayBtn.center
     pygame.draw.rect(screen, WHITE, autoplayBtn)
     screen.blit(buttonText, buttonRect)
-    #test button
-    testBtn = pygame.Rect(
-        (2 / 3) * width + BOARD_PADDING, BOARD_PADDING,
-        (width / 3) - BOARD_PADDING * 2, 50
-    )
-    bText = "test" if not autoplay else "Stop"
-    buttonText = mediumFont.render(bText, True, BLACK)
-    buttonRect = buttonText.get_rect()
-    buttonRect.center = autoplayBtn.center
-    pygame.draw.rect(screen, WHITE, testBtn)
-    screen.blit(buttonText, buttonRect)
+
     # AI Move button
     aiButton = pygame.Rect(
         (2 / 3) * width + BOARD_PADDING, (1 / 3) * height - 50,
@@ -208,7 +198,7 @@ while True:
     textRect = text.get_rect()
     textRect.center = ((5 / 6) * width, (2 / 3) * height)
     screen.blit(text, textRect)
-    if testCount!=1000:
+    if test and testCount!=1000:
         if game.mines==flags:
             testCount+=1
             win_num+=1
@@ -227,10 +217,12 @@ while True:
             revealed = set()
             flags = set()
             lost = False
-    else:
+    elif test:
         print("win=",win_num)
         print("lost",lost_num)
         autoplay=False
+        test = False
+        testCount = 0
         break
 
     move = None
@@ -256,6 +248,7 @@ while True:
         
         if testBtn.collidepoint(mouse):
             autoplay=True
+            test = True
             
         # If autoplay button clicked, make an AI move
         if autoplayBtn.collidepoint(mouse):
@@ -289,6 +282,8 @@ while True:
             revealed = set()
             flags = set()
             lost = False
+            test = False
+            testCount = 0
             continue
 
         # User-made move
