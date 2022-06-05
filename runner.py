@@ -47,6 +47,11 @@ ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
 autoplay = False
 autoplaySpeed = 0.3
 
+test = False
+testCount = 0
+win_num=0
+lost_num=0
+
 # Keep track of revealed cells, flagged cells, and if a mine was hit
 revealed = set()
 flags = set()
@@ -140,6 +145,19 @@ while True:
 
             row.append(rect)
         cells.append(row)
+
+    #test button
+    testBtn = pygame.Rect(
+        (2 / 3) * width + BOARD_PADDING, BOARD_PADDING + 280,
+        (width / 3) - BOARD_PADDING * 2, 50
+    )
+    bText = "Test"
+    buttonText = mediumFont.render(bText, True, BLACK)
+    buttonRect = buttonText.get_rect()
+    buttonRect.center = testBtn.center
+    pygame.draw.rect(screen, WHITE, testBtn)
+    screen.blit(buttonText, buttonRect)
+
     #autoplay button
     autoplayBtn = pygame.Rect(
         (2 / 3) * width + BOARD_PADDING, BOARD_PADDING,
@@ -180,6 +198,30 @@ while True:
     textRect = text.get_rect()
     textRect.center = ((5 / 6) * width, (2 / 3) * height)
     screen.blit(text, textRect)
+    if testCount!=1000:
+        if game.mines==flags:
+            testCount+=1
+            win_num+=1
+            autoplay=True
+            game = Minesweeper(height=HEIGHT, width=WIDTH, mines=MINES)
+            ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
+            revealed = set()
+            flags = set()
+            lost = False
+        elif lost:
+            testCount+=1
+            lost_num+=1
+            autoplay=True
+            game = Minesweeper(height=HEIGHT, width=WIDTH, mines=MINES)
+            ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
+            revealed = set()
+            flags = set()
+            lost = False
+    else:
+        print("win=",win_num)
+        print("lost",lost_num)
+        autoplay=False
+        break
 
     move = None
 
@@ -199,8 +241,15 @@ while True:
 
     elif left == 1:
         mouse = pygame.mouse.get_pos()
+
+        #If test button clicked, make an AI move
+        
+        if testBtn.collidepoint(mouse):
+            autoplay=True
+            
         # If autoplay button clicked, make an AI move
         if autoplayBtn.collidepoint(mouse):
+            print("run in autoplay")
             if not lost:
                 autoplay = not autoplay
             else:
@@ -256,6 +305,9 @@ while True:
         # Add delay for autoplay
         if autoplay:
             time.sleep(autoplaySpeed)
+
+        
+
     # Make move and update AI knowledge
     def make_move(move):
         if game.is_mine(move):
@@ -280,6 +332,7 @@ while True:
     if move:
         if make_move(move):
             autoplay = False
+            #testcount+=1
             lost = True
 
     pygame.display.flip()
