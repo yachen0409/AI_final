@@ -151,7 +151,17 @@ while True:
     buttonRect.center = autoplayBtn.center
     pygame.draw.rect(screen, WHITE, autoplayBtn)
     screen.blit(buttonText, buttonRect)
-
+    #test button
+    testBtn = pygame.Rect(
+        (2 / 3) * width + BOARD_PADDING, BOARD_PADDING,
+        (width / 3) - BOARD_PADDING * 2, 50
+    )
+    bText = "test" if not autoplay else "Stop"
+    buttonText = mediumFont.render(bText, True, BLACK)
+    buttonRect = buttonText.get_rect()
+    buttonRect.center = autoplayBtn.center
+    pygame.draw.rect(screen, WHITE, testBtn)
+    screen.blit(buttonText, buttonRect)
     # AI Move button
     aiButton = pygame.Rect(
         (2 / 3) * width + BOARD_PADDING, (1 / 3) * height - 50,
