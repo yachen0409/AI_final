@@ -212,30 +212,7 @@ class MinesweeperAI():
                     elif (i, j) in self.mines:
                         count -= 1
         self.knowledge.append(Sentence(cells, count))
-        for neighbor in self.knowledge:
-            for element in neighbor.cells:
-                # print("element:",element)
-                if element not in cell_freq:
-                    cell_freq[element]=1
-                else:
-                    cell_freq[element]+=1
-                for i in range(element[0] - 1, element[0] + 2):
-                    for j in range(element[1] - 1, element[1] + 2):
-                        if 0 <= i < self.height and 0 <= j < self.width:
-                            if (i,j) in self.moves_made:
-                                neighbor_num=0
-                                for row in range(i-1,i+2):
-                                    for col in range(j-1,j+2):
-                                        if 0 <= row < self.height and 0 <= col < self.width:
-                                            if (row, col) not in self.moves_made:
-                                                neighbor_num+=1
-                                if element in Dict:
-                                    Dict[element]+=self.countDict[(i,j)]/neighbor_num
-                                else:
-                                    Dict[element]=self.countDict[(i,j)]/neighbor_num
-        for index in Dict:
-            Dict[index]=Dict[index]/cell_freq[index]
-        self.jimmy=Dict
+        
         # print("Dict:",Dict)
                             
 
@@ -265,6 +242,31 @@ class MinesweeperAI():
                         sentence2.count - sentence1.count)
                     if new_knowledge not in self.knowledge:
                         self.knowledge.append(new_knowledge)
+                        
+        for neighbor in self.knowledge:
+            for element in neighbor.cells:
+                # print("element:",element)
+                if element not in cell_freq:
+                    cell_freq[element]=1
+                else:
+                    cell_freq[element]+=1
+                for i in range(element[0] - 1, element[0] + 2):
+                    for j in range(element[1] - 1, element[1] + 2):
+                        if 0 <= i < self.height and 0 <= j < self.width:
+                            if (i,j) in self.moves_made:
+                                neighbor_num=0
+                                for row in range(i-1,i+2):
+                                    for col in range(j-1,j+2):
+                                        if 0 <= row < self.height and 0 <= col < self.width:
+                                            if (row, col) not in self.moves_made:
+                                                neighbor_num+=1
+                                if element in Dict:
+                                    Dict[element]+=self.countDict[(i,j)]/neighbor_num
+                                else:
+                                    Dict[element]=self.countDict[(i,j)]/neighbor_num
+        for index in Dict:
+            Dict[index]=Dict[index]/cell_freq[index]
+        self.jimmy=Dict
 
     def make_safe_move(self):
         """

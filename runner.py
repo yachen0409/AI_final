@@ -51,6 +51,7 @@ test = False
 testCount = 0
 win_num=0
 lost_num=0
+scoreBoard = set()
 
 # Keep track of revealed cells, flagged cells, and if a mine was hit
 revealed = set()
@@ -61,7 +62,6 @@ lost = False
 instructions = True
 
 while True:
-
     # Check if game quit
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -198,8 +198,11 @@ while True:
     textRect = text.get_rect()
     textRect.center = ((5 / 6) * width, (2 / 3) * height)
     screen.blit(text, textRect)
-    if test and testCount!=1000:
+
+    if test and testCount!=100:
         if game.mines==flags:
+            print(len(ai.safes)*2)
+            scoreBoard.add(len(ai.safes)*2)
             testCount+=1
             win_num+=1
             autoplay=True
@@ -208,7 +211,11 @@ while True:
             revealed = set()
             flags = set()
             lost = False
+            print("No.", testCount," iteration------------------")
         elif lost:
+            print(len(ai.safes))
+            if len(ai.safes) != 0:
+                scoreBoard.add(len(ai.safes))
             testCount+=1
             lost_num+=1
             autoplay=True
@@ -217,9 +224,11 @@ while True:
             revealed = set()
             flags = set()
             lost = False
+            print("No.", testCount," iteration------------------")
     elif test:
         print("win=",win_num)
-        print("lost",lost_num)
+        print("lost=",lost_num)
+        print("average score=", sum(scoreBoard)/len(scoreBoard))
         autoplay=False
         test = False
         testCount = 0
