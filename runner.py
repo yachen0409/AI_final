@@ -45,13 +45,15 @@ game = Minesweeper(height=HEIGHT, width=WIDTH, mines=MINES)
 ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
 
 autoplay = False
-autoplaySpeed = 0.3
+autoplaySpeed = 0.00000001
 
 test = False
 testCount = 0
 win_num=0
 lost_num=0
+random = 0
 scoreBoard = set()
+lostBoard = set()
 
 # Keep track of revealed cells, flagged cells, and if a mine was hit
 revealed = set()
@@ -199,7 +201,7 @@ while True:
     textRect.center = ((5 / 6) * width, (2 / 3) * height)
     screen.blit(text, textRect)
 
-    if test and testCount!=100:
+    if test and testCount!=1000:
         if game.mines==flags:
             print(len(ai.safes)*2)
             scoreBoard.add(len(ai.safes)*2)
@@ -214,8 +216,9 @@ while True:
             print("No.", testCount," iteration------------------")
         elif lost:
             print(len(ai.safes))
-            if len(ai.safes) != 0:
+            if len(ai.safes) >= 25:
                 scoreBoard.add(len(ai.safes))
+                lostBoard.add(len(ai.safes))
             testCount+=1
             lost_num+=1
             autoplay=True
@@ -228,7 +231,9 @@ while True:
     elif test:
         print("win=",win_num)
         print("lost=",lost_num)
+        print("random times=", random)
         print("average score=", sum(scoreBoard)/len(scoreBoard))
+        print("average score when loss=", sum(lostBoard)/len(lostBoard))
         autoplay=False
         test = False
         testCount = 0
@@ -312,6 +317,7 @@ while True:
                 print("No moves left to make.")
                 autoplay = False
             else:
+                random+=1
                 print("No known safe moves, AI making random move.")
         else:
             print("AI making safe move.")
