@@ -45,12 +45,15 @@ game = Minesweeper(height=HEIGHT, width=WIDTH, mines=MINES)
 ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
 
 autoplay = False
-autoplaySpeed = 0.3
+autoplaySpeed = 0.00001
 
 test = False
 testCount = 0
 win_num=0
 lost_num=0
+random=0
+
+lostBoard = set()
 scoreBoard = set()
 
 # Keep track of revealed cells, flagged cells, and if a mine was hit
@@ -199,9 +202,8 @@ while True:
     textRect.center = ((5 / 6) * width, (2 / 3) * height)
     screen.blit(text, textRect)
 
-    if test and testCount!=100:
+    if test and testCount!=10000:
         if game.mines==flags:
-            print(len(ai.safes)*2)
             scoreBoard.add(len(ai.safes)*2)
             testCount+=1
             win_num+=1
@@ -213,8 +215,11 @@ while True:
             lost = False
             print("No.", testCount," iteration------------------")
         elif lost:
-            print(len(ai.safes))
             if len(ai.safes) != 0:
+                lostBoard.add(len(ai.safes))
+            else:
+                lostBoard.add(1)
+            if len(ai.safes) >= 50:
                 scoreBoard.add(len(ai.safes))
             testCount+=1
             lost_num+=1
@@ -226,8 +231,9 @@ while True:
             lost = False
             print("No.", testCount," iteration------------------")
     elif test:
-        print("win=",win_num)
-        print("lost=",lost_num)
+        print("Won rate=", win_num/10000)
+        print("Average step(if lost)=", sum(lostBoard)/lost_num)
+        print("total random step=", random)
         print("average score=", sum(scoreBoard)/len(scoreBoard))
         autoplay=False
         test = False
@@ -280,6 +286,7 @@ while True:
                     print("No moves left to make.")
                 else:
                     print("No known safe moves, AI making random move.")
+                    random+=1
             else:
                 print("AI making safe move.")
             time.sleep(0.2)
@@ -313,6 +320,7 @@ while True:
                 autoplay = False
             else:
                 print("No known safe moves, AI making random move.")
+                random+=1
         else:
             print("AI making safe move.")
 
