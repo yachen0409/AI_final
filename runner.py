@@ -297,7 +297,6 @@ while True:
                     print("No moves left to make.")
                 else:
                     print("No known safe moves, AI making random move.")
-                    random+=1
             else:
                 print("AI making safe move.")
             time.sleep(0.2)
@@ -334,7 +333,6 @@ while True:
             else:
                 random+=1
                 # print("No known safe moves, AI making random move.")
-                random+=1
         # else:
         #     print("AI making safe move.")
 
