@@ -45,7 +45,7 @@ game = Minesweeper(height=HEIGHT, width=WIDTH, mines=MINES)
 ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
 #-------------------------OUR CODE------------------------------
 autoplay = False
-autoplaySpeed = 0
+autoplaySpeed = 0.3
 test = False
 testCount = 0
 
