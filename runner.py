@@ -43,17 +43,19 @@ mine = pygame.transform.scale(mine, (cell_size, cell_size))
 # Create game and AI agent
 game = Minesweeper(height=HEIGHT, width=WIDTH, mines=MINES)
 ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
-
+#-------------------------OUR CODE------------------------------
 autoplay = False
-autoplaySpeed = 0.00000001
-
+autoplaySpeed = 0
 test = False
 testCount = 0
+
 win_num=0
 lost_num=0
+bigger_lost_num = 0
 random = 0
 scoreBoard = set()
 lostBoard = set()
+#-------------------------OUR CODE------------------------------
 
 # Keep track of revealed cells, flagged cells, and if a mine was hit
 revealed = set()
@@ -201,9 +203,9 @@ while True:
     textRect.center = ((5 / 6) * width, (2 / 3) * height)
     screen.blit(text, textRect)
 
-    if test and testCount!=1000:
+    #-------------------------OUR CODE------------------------------
+    if test and testCount!=10000:
         if game.mines==flags:
-            print(len(ai.safes)*2)
             scoreBoard.add(len(ai.safes)*2)
             testCount+=1
             win_num+=1
@@ -213,12 +215,18 @@ while True:
             revealed = set()
             flags = set()
             lost = False
-            print("No.", testCount," iteration------------------")
+            if testCount % 100 == 0:
+                print("No.", testCount," iteration------------------")
         elif lost:
-            print(len(ai.safes))
-            if len(ai.safes) >= 25:
+            # if len(ai.safes) >= 10:
+            #     lostBoard.add(len(ai.safes))
+            # # else:
+            # #     lostBoard.add(1)
+            if len(ai.safes) >= 1:
                 scoreBoard.add(len(ai.safes))
                 lostBoard.add(len(ai.safes))
+                bigger_lost_num += 1
+
             testCount+=1
             lost_num+=1
             autoplay=True
@@ -227,17 +235,21 @@ while True:
             revealed = set()
             flags = set()
             lost = False
-            print("No.", testCount," iteration------------------")
+            if testCount % 100 == 0:
+                print("No.", testCount," iteration------------------")
     elif test:
-        print("win=",win_num)
-        print("lost=",lost_num)
-        print("random times=", random)
+        print("---------------------------------------------------------")
+        print("Won rate=", win_num/10000)
+        print("Average step(if lost)=", sum(lostBoard)/bigger_lost_num)
+        print("total random step=", random)
         print("average score=", sum(scoreBoard)/len(scoreBoard))
         print("average score when loss=", sum(lostBoard)/len(lostBoard))
+        print("---------------------------------------------------------")
         autoplay=False
         test = False
         testCount = 0
         break
+    #-------------------------OUR CODE------------------------------
 
     move = None
 
@@ -257,9 +269,9 @@ while True:
 
     elif left == 1:
         mouse = pygame.mouse.get_pos()
-
-        #If test button clicked, make an AI move
         
+        #-------------------------OUR CODE------------------------------
+        #If test button clicked, make an AI move
         if testBtn.collidepoint(mouse):
             autoplay=True
             test = True
@@ -273,7 +285,7 @@ while True:
                 autoplay = False
             time.sleep(0.2)
             continue
-
+        #-------------------------OUR CODE------------------------------
         # If AI button clicked, make an AI move
         if aiButton.collidepoint(mouse) and not lost:
             move = ai.make_safe_move()
@@ -285,6 +297,7 @@ while True:
                     print("No moves left to make.")
                 else:
                     print("No known safe moves, AI making random move.")
+                    random+=1
             else:
                 print("AI making safe move.")
             time.sleep(0.2)
@@ -308,26 +321,28 @@ while True:
                             and (i, j) not in flags
                             and (i, j) not in revealed):
                         move = (i, j)
+
+    #-------------------------OUR CODE------------------------------                    
     if autoplay:
         move = ai.make_safe_move()
         if move is None:
             move = ai.make_random_move()
             if move is None:
                 flags = ai.mines.copy()
-                print("No moves left to make.")
+                # print("No moves left to make.")
                 autoplay = False
             else:
                 random+=1
-                print("No known safe moves, AI making random move.")
-        else:
-            print("AI making safe move.")
+                # print("No known safe moves, AI making random move.")
+                random+=1
+        # else:
+        #     print("AI making safe move.")
 
         # Add delay for autoplay
         if autoplay:
             time.sleep(autoplaySpeed)
-
+    #-------------------------OUR CODE------------------------------
         
-
     # Make move and update AI knowledge
     def make_move(move):
         if game.is_mine(move):
@@ -352,7 +367,6 @@ while True:
     if move:
         if make_move(move):
             autoplay = False
-            #testcount+=1
             lost = True
 
     pygame.display.flip()

@@ -242,7 +242,7 @@ class MinesweeperAI():
                         sentence2.count - sentence1.count)
                     if new_knowledge not in self.knowledge:
                         self.knowledge.append(new_knowledge)
-                        
+        #-------------------------OUR CODE------------------------------                
         for neighbor in self.knowledge:
             for element in neighbor.cells:
                 # print("element:",element)
@@ -258,15 +258,18 @@ class MinesweeperAI():
                                 for row in range(i-1,i+2):
                                     for col in range(j-1,j+2):
                                         if 0 <= row < self.height and 0 <= col < self.width:
-                                            if (row, col) not in self.moves_made:
+                                            if (row, col) not in self.moves_made and (row, col) not in self.mines:
                                                 neighbor_num+=1
                                 if element in Dict:
                                     Dict[element]+=self.countDict[(i,j)]/neighbor_num
                                 else:
                                     Dict[element]=self.countDict[(i,j)]/neighbor_num
+                                if element in self.mines:
+                                    del Dict[element]
         for index in Dict:
             Dict[index]=Dict[index]/cell_freq[index]
         self.jimmy=Dict
+        #-------------------------OUR CODE------------------------------
 
     def make_safe_move(self):
         """
@@ -277,6 +280,7 @@ class MinesweeperAI():
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
+        #-------------------------OUR CODE------------------------------
         available_steps = self.safes - self.moves_made
         if available_steps:
             return random.choice(tuple(available_steps))
@@ -284,6 +288,7 @@ class MinesweeperAI():
             temp_jimmy = sorted(self.jimmy.items(), key=lambda item: item[1])
             return temp_jimmy[0][0]
         return None
+        #-------------------------OUR CODE------------------------------
 
     def make_random_move(self):
         """
